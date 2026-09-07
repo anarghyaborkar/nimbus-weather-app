@@ -1,9 +1,8 @@
 // api/index.js
-// ─────────────────────────────────────────────────────────────────────────────
-// Vercel Serverless Function entry point.
-// Delegates all API routing directly to the existing Express app.
-// ─────────────────────────────────────────────────────────────────────────────
-
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const app = require('../server/server.js');
 
-module.exports = app;
+export default function handler(req, res) {
+  return app(req, res);
+}

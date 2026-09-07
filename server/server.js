@@ -43,15 +43,12 @@ app.use(express.json());
 
 // Step 4 — Mount route modules.
 // ─────────────────────────────
-// All weather-related routes live under /api/weather.
-// Adding new feature routes later is as simple as:
-//   const forecastRoute = require('./routes/forecast');
-//   app.use('/api/forecast', forecastRoute);
+// Mount both with and without /api prefix so local server and Vercel serverless rewrites match seamlessly.
 app.use('/api/weather', weatherRoute);
+app.use('/weather', weatherRoute);
 
 // Health-check endpoint — useful to quickly verify the server is running.
-// Visit http://localhost:5000/health in your browser to confirm.
-app.get('/health', (req, res) => {
+app.get(['/health', '/api/health'], (req, res) => {
   res.status(200).json({
     status: 'ok',
     message: 'Nimbus server is running 🌤',
