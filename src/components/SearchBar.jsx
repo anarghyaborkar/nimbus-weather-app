@@ -1,66 +1,170 @@
 // src/components/SearchBar.jsx
-// City search input — will eventually call the weather API to look up a location.
+// Minimalist, command-bar inspired search input (Linear / Raycast / Arc style).
 
-function SearchBar() {
+import { useState } from 'react';
+
+function SearchBar({ onSearch, onDetectLocation, isLoading }) {
+  const [query, setQuery] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    onSearch(query.trim());
+  };
+
   return (
-    <div className="searchbar" role="search">
-      <div className="searchbar__container glass">
-        <span className="searchbar__icon" aria-hidden="true">🔍</span>
-        <input
-          id="city-search"
-          className="searchbar__input"
-          type="text"
-          placeholder="Search for a city…"
-          aria-label="Search for a city"
-        />
-        <button className="searchbar__btn" aria-label="Search">
-          Search
+    <div className="search-wrap">
+      <form className="search-form" role="search" onSubmit={handleSubmit}>
+        <div className="search-box">
+          <svg
+            className="search-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+
+          <input
+            id="city-search"
+            className="search-input"
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search city or location…"
+            aria-label="Search city"
+            disabled={isLoading}
+          />
+
+          <button
+            type="submit"
+            className="search-submit"
+            aria-label="Search"
+            disabled={isLoading || !query.trim()}
+          >
+            {isLoading ? '…' : 'Search'}
+          </button>
+        </div>
+      </form>
+
+      {onDetectLocation && (
+        <button
+          type="button"
+          className="location-pill"
+          onClick={onDetectLocation}
+          disabled={isLoading}
+          aria-label="Detect current location"
+        >
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+          </svg>
+          <span>Use my location</span>
         </button>
-      </div>
+      )}
 
       <style>{`
-        .searchbar {
+        .search-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: var(--space-xs);
           width: 100%;
-          max-width: 560px;
+          max-width: 480px;
           margin: 0 auto;
         }
-        .searchbar__container {
+        .search-form {
+          width: 100%;
+        }
+        .search-box {
           display: flex;
           align-items: center;
-          gap: var(--space-sm);
-          padding: var(--space-sm) var(--space-md);
+          gap: var(--space-xs);
+          padding: 8px 10px 8px 14px;
           border-radius: var(--radius-full);
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid var(--border-subtle);
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+          transition: border-color var(--trans-fast), background var(--trans-fast), box-shadow var(--trans-fast);
         }
-        .searchbar__icon {
-          font-size: 1rem;
-          opacity: 0.6;
+        .search-box:focus-within {
+          background: rgba(255, 255, 255, 0.055);
+          border-color: var(--border-focus);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        .search-icon {
+          color: var(--text-tertiary);
           flex-shrink: 0;
         }
-        .searchbar__input {
+        .search-input {
           flex: 1;
           background: transparent;
           border: none;
           outline: none;
-          font-family: var(--font-sans);
-          font-size: 1rem;
-          color: var(--clr-text-primary);
-        }
-        .searchbar__input::placeholder {
-          color: var(--clr-text-muted);
-        }
-        .searchbar__btn {
-          padding: var(--space-xs) var(--space-md);
-          border-radius: var(--radius-full);
-          background: linear-gradient(135deg, var(--clr-accent-blue), var(--clr-accent-indigo));
-          color: #fff;
           font-size: 0.875rem;
-          font-weight: 500;
-          transition: opacity var(--transition-fast), transform var(--transition-fast);
-          flex-shrink: 0;
+          color: var(--text-primary);
+          letter-spacing: -0.01em;
         }
-        .searchbar__btn:hover {
-          opacity: 0.88;
-          transform: scale(1.02);
+        .search-input::placeholder {
+          color: var(--text-quaternary);
+        }
+        .search-input:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        .search-submit {
+          padding: 6px 14px;
+          border-radius: var(--radius-full);
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: var(--text-primary);
+          font-size: 0.8125rem;
+          font-weight: 500;
+          transition: background var(--trans-fast), color var(--trans-fast), border-color var(--trans-fast);
+        }
+        .search-submit:hover:not(:disabled) {
+          background: rgba(255, 255, 255, 0.14);
+          color: var(--text-hero);
+          border-color: rgba(255, 255, 255, 0.15);
+        }
+        .search-submit:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+        }
+        .location-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 12px;
+          border-radius: var(--radius-full);
+          color: var(--text-tertiary);
+          font-size: 0.75rem;
+          font-weight: 400;
+          transition: color var(--trans-fast);
+        }
+        .location-pill:hover:not(:disabled) {
+          color: var(--text-secondary);
+        }
+        .location-pill:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
         }
       `}</style>
     </div>

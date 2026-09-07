@@ -1,8 +1,7 @@
 // src/pages/Home.jsx
-// The main landing page for Nimbus.
-// Composes all UI components into a single cohesive layout.
-// Later steps will add state management (weather data, search results, etc.)
+// Main view for Nimbus — Calm, spacious layout inspired by Apple Weather, Linear, Arc and Notion.
 
+import { useEffect, useCallback } from 'react';
 import AnimatedBackground from '../components/AnimatedBackground';
 import Navbar            from '../components/Navbar';
 import SearchBar         from '../components/SearchBar';
@@ -12,44 +11,88 @@ import WeatherFacts      from '../components/WeatherFacts';
 import SmartTips         from '../components/SmartTips';
 import SpotifyCard       from '../components/SpotifyCard';
 import Footer            from '../components/Footer';
+import { useWeather }    from '../hooks/useWeather';
+import { useForecast }   from '../hooks/useForecast';
 
 function Home() {
+  const {
+    weather,
+    loading: weatherLoading,
+    error: weatherError,
+    isLocationBased,
+    searchCity,
+    detectLocation,
+  } = useWeather('London');
+
+  const {
+    forecast,
+    loading: forecastLoading,
+    error: forecastError,
+    getForecastForCity,
+    getForecastForCoordinates,
+  } = useForecast();
+
+  useEffect(() => {
+    getForecastForCity('London');
+  }, [getForecastForCity]);
+
+  const handleSearch = useCallback((city) => {
+    searchCity(city);
+    getForecastForCity(city);
+  }, [searchCity, getForecastForCity]);
+
+  const handleDetectLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          getForecastForCoordinates(position.coords.latitude, position.coords.longitude);
+        },
+        () => {},
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+      );
+    }
+    detectLocation();
+  }, [detectLocation, getForecastForCoordinates]);
+
   return (
     <>
-      {/* Fixed atmospheric background — sits behind everything */}
-      <AnimatedBackground />
-
-      {/* Sticky top navigation */}
+      <AnimatedBackground weather={weather} />
       <Navbar />
 
-      {/* Scrollable page content */}
-      <main className="home-main" role="main">
-        {/* Hero section — search + headline */}
-        <section className="home-hero" aria-label="Search weather">
-          <h1 className="home-hero__heading">
-            Your weather,{' '}
-            <span className="gradient-text">beautifully clear.</span>
-          </h1>
-          <p className="home-hero__sub">
-            Search for any city and get real-time weather with smart insights.
-          </p>
-          <SearchBar />
+      <main className="canvas" role="main">
+        {/* Search header with generous breathing room */}
+        <section className="search-section" aria-label="Search weather">
+          <SearchBar
+            onSearch={handleSearch}
+            onDetectLocation={handleDetectLocation}
+            isLoading={weatherLoading || forecastLoading}
+          />
         </section>
 
-        {/* Primary weather information */}
-        <section className="home-weather" aria-label="Weather overview">
-          <WeatherCard />
-          <ForecastSection />
+        {/* Hero focal weather & 5-day outlook */}
+        <section className="primary-section" aria-label="Current conditions and forecast">
+          <WeatherCard
+            weather={weather}
+            loading={weatherLoading}
+            error={weatherError}
+            isLocationBased={isLocationBased}
+          />
+
+          <ForecastSection
+            forecast={forecast}
+            loading={forecastLoading}
+            error={forecastError}
+          />
         </section>
 
-        {/* Secondary information row */}
-        <section className="home-insights" aria-label="Weather insights">
-          <div className="home-insights__left">
-            <WeatherFacts />
+        {/* Secondary insight modules — quiet 2-column layout */}
+        <section className="secondary-section" aria-label="Weather highlights and context">
+          <div className="secondary-column">
+            <WeatherFacts weather={weather} />
           </div>
-          <div className="home-insights__right">
-            <SmartTips />
-            <SpotifyCard />
+          <div className="secondary-column secondary-column--stacked">
+            <SmartTips weather={weather} loading={weatherLoading} />
+            <SpotifyCard weather={weather} />
           </div>
         </section>
       </main>
@@ -57,70 +100,49 @@ function Home() {
       <Footer />
 
       <style>{`
-        .home-main {
+        .canvas {
           position: relative;
           z-index: 1;
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: var(--space-3xl);
-          padding: var(--space-3xl) var(--space-xl);
-          max-width: 1200px;
+          gap: var(--space-xl);
+          padding: var(--space-lg) var(--space-md) var(--space-2xl);
+          max-width: 860px;
           width: 100%;
           margin: 0 auto;
-          box-sizing: border-box;
         }
 
-        /* ── Hero ── */
-        .home-hero {
+        .search-section {
+          padding-top: var(--space-sm);
+        }
+
+        .primary-section {
           display: flex;
           flex-direction: column;
-          align-items: center;
           gap: var(--space-lg);
-          text-align: center;
-          padding-top: var(--space-2xl);
-        }
-        .home-hero__heading {
-          font-size: clamp(2rem, 5vw, 3.5rem);
-          font-weight: 700;
-          letter-spacing: -0.03em;
-          line-height: 1.15;
-        }
-        .home-hero__sub {
-          font-size: 1.125rem;
-          color: var(--clr-text-secondary);
-          max-width: 420px;
         }
 
-        /* ── Primary weather row ── */
-        .home-weather {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-xl);
-        }
-
-        /* ── Insights row ── */
-        .home-insights {
+        .secondary-section {
           display: grid;
-          grid-template-columns: 1fr 380px;
-          gap: var(--space-xl);
+          grid-template-columns: 1fr 1fr;
+          gap: var(--space-md);
           align-items: start;
         }
-        .home-insights__right {
+
+        .secondary-column--stacked {
           display: flex;
           flex-direction: column;
-          gap: var(--space-xl);
+          gap: var(--space-md);
         }
 
-        @media (max-width: 960px) {
-          .home-insights {
-            grid-template-columns: 1fr;
+        @media (max-width: 720px) {
+          .canvas {
+            padding: var(--space-md) var(--space-sm) var(--space-xl);
+            gap: var(--space-lg);
           }
-        }
-        @media (max-width: 600px) {
-          .home-main {
-            padding: var(--space-xl) var(--space-md);
-            gap: var(--space-2xl);
+          .secondary-section {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>

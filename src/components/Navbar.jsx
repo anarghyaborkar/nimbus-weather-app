@@ -1,71 +1,69 @@
 // src/components/Navbar.jsx
-// Top navigation bar — displays the app logo/brand and primary nav actions.
+// Minimalist, calm navigation header inspired by Linear and Vercel.
 
 function Navbar() {
   return (
-    <nav className="navbar glass" role="navigation" aria-label="Main navigation">
-      <div className="navbar__brand">
-        <span className="navbar__logo" aria-hidden="true">☁️</span>
-        <span className="navbar__name">Nimbus</span>
-      </div>
+    <nav className="navbar" role="navigation" aria-label="Main navigation">
+      <div className="navbar__inner">
+        <div className="navbar__brand">
+          <span className="navbar__logo" aria-hidden="true">☁</span>
+          <span className="navbar__name">Nimbus</span>
+        </div>
 
-      <div className="navbar__actions">
-        <button className="navbar__btn" aria-label="Toggle temperature unit">
-          °C / °F
-        </button>
-        <button className="navbar__btn" aria-label="Settings">
-          ⚙
-        </button>
+        <div className="navbar__actions">
+          <span className="navbar__pill">Live Weather</span>
+        </div>
       </div>
 
       <style>{`
         .navbar {
           position: sticky;
           top: 0;
-          z-index: 100;
+          z-index: 50;
+          background: rgba(10, 12, 16, 0.75);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-bottom: 1px solid var(--border-subtle);
+          transition: border-color var(--trans-fast);
+        }
+        .navbar__inner {
+          max-width: 980px;
+          margin: 0 auto;
+          padding: var(--space-sm) var(--space-md);
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: var(--space-md) var(--space-xl);
-          border-radius: 0;
-          border-left: none;
-          border-right: none;
-          border-top: none;
         }
         .navbar__brand {
           display: flex;
           align-items: center;
-          gap: var(--space-sm);
+          gap: 10px;
         }
         .navbar__logo {
-          font-size: 1.5rem;
+          font-size: 1.125rem;
+          color: var(--text-hero);
+          opacity: 0.9;
         }
         .navbar__name {
-          font-size: 1.25rem;
-          font-weight: 700;
+          font-size: 0.9375rem;
+          font-weight: 600;
           letter-spacing: -0.02em;
-          background: linear-gradient(135deg, var(--clr-accent-blue), var(--clr-accent-indigo));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: var(--text-hero);
         }
         .navbar__actions {
           display: flex;
           align-items: center;
-          gap: var(--space-sm);
+          gap: var(--space-xs);
         }
-        .navbar__btn {
-          padding: var(--space-xs) var(--space-md);
+        .navbar__pill {
+          padding: 4px 10px;
           border-radius: var(--radius-full);
-          background: var(--clr-glass-bg);
-          border: 1px solid var(--clr-glass-border);
-          color: var(--clr-text-secondary);
-          font-size: 0.875rem;
-          transition: background var(--transition-fast), color var(--transition-fast);
-        }
-        .navbar__btn:hover {
-          background: var(--clr-glass-hover);
-          color: var(--clr-text-primary);
+          background: var(--bg-surface);
+          border: 1px solid var(--border-subtle);
+          color: var(--text-secondary);
+          font-size: 0.75rem;
+          font-weight: 500;
+          letter-spacing: 0.01em;
         }
       `}</style>
     </nav>

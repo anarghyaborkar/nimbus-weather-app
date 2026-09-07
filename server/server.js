@@ -10,10 +10,12 @@
 //   6. Start listening on a port
 // ─────────────────────────────────────────────────────────────────────────────
 
+const path = require('path');
+
 // Step 1 — Load .env variables into process.env as early as possible.
-//           Variables like OPENWEATHER_API_KEY and PORT will now be available
-//           anywhere in this Node.js process.
-require('dotenv').config();
+//           Use an explicit path to server/.env so launching from the project root
+//           or inside server/ always loads the correct configuration.
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const express      = require('express');
 const cors         = require('cors');

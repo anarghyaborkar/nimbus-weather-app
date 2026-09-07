@@ -1,87 +1,104 @@
 // src/components/ForecastSection.jsx
-// Horizontal 5-day forecast strip — will be powered by API data in a future step.
+// 5-day forecast module — quiet, elegant horizontal layout.
 
-const PLACEHOLDER_DAYS = [
-  { day: 'Today',  icon: '⛅', high: 34, low: 26 },
-  { day: 'Tue',   icon: '🌧', high: 30, low: 24 },
-  { day: 'Wed',   icon: '⛈', high: 28, low: 22 },
-  { day: 'Thu',   icon: '🌤', high: 33, low: 25 },
-  { day: 'Fri',   icon: '☀️', high: 36, low: 27 },
-];
+import ForecastCard from './ForecastCard';
 
-function ForecastSection() {
+function ForecastSection({ forecast, loading, error }) {
+  const dailyList = forecast?.daily || [];
+
   return (
     <section className="forecast" aria-label="5-day forecast">
-      <h3 className="forecast__title">5-Day Forecast</h3>
-
-      <div className="forecast__strip">
-        {PLACEHOLDER_DAYS.map((item) => (
-          <div
-            key={item.day}
-            className={`forecast__card glass ${item.day === 'Today' ? 'forecast__card--active' : ''}`}
-          >
-            <p className="forecast__day">{item.day}</p>
-            <span className="forecast__icon" aria-hidden="true">{item.icon}</span>
-            <p className="forecast__high">{item.high}°</p>
-            <p className="forecast__low">{item.low}°</p>
-          </div>
-        ))}
+      <div className="forecast__head">
+        <h3 className="forecast__label">5-Day Outlook</h3>
+        {loading && <span className="forecast__status">Updating…</span>}
       </div>
+
+      {error && !loading && dailyList.length === 0 && (
+        <div className="forecast__error">
+          <p className="forecast__error-text">{error}</p>
+        </div>
+      )}
+
+      {loading && dailyList.length === 0 && (
+        <div className="forecast__row">
+          {[1, 2, 3, 4, 5].map((idx) => (
+            <div key={idx} className="forecast__skeleton" />
+          ))}
+        </div>
+      )}
+
+      {dailyList.length > 0 && (
+        <div className={`forecast__row ${loading ? 'forecast__row--loading' : ''}`}>
+          {dailyList.map((item, index) => (
+            <ForecastCard
+              key={item.date || index}
+              item={item}
+              isToday={index === 0}
+            />
+          ))}
+        </div>
+      )}
 
       <style>{`
         .forecast {
           width: 100%;
         }
-        .forecast__title {
-          font-size: 1rem;
-          font-weight: 600;
-          color: var(--clr-text-secondary);
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          margin-bottom: var(--space-md);
+        .forecast__head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: var(--space-sm);
+          padding: 0 2px;
         }
-        .forecast__strip {
+        .forecast__label {
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: var(--text-tertiary);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .forecast__status {
+          font-size: 0.6875rem;
+          color: var(--text-quaternary);
+        }
+        .forecast__error {
+          padding: var(--space-sm);
+          border-radius: var(--radius-sm);
+          border: 1px solid rgba(239, 68, 68, 0.15);
+          background: rgba(239, 68, 68, 0.04);
+        }
+        .forecast__error-text {
+          color: #fca5a5;
+          font-size: 0.75rem;
+        }
+        .forecast__row {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          gap: var(--space-md);
+          gap: var(--space-xs);
+          transition: opacity var(--trans-fast);
         }
-        .forecast__card {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: var(--space-sm);
-          padding: var(--space-md) var(--space-sm);
-          transition: background var(--transition-base), transform var(--transition-base);
+        .forecast__row--loading {
+          opacity: 0.6;
         }
-        .forecast__card:hover {
-          background: var(--clr-glass-hover);
-          transform: translateY(-3px);
+        .forecast__skeleton {
+          height: 98px;
+          border-radius: var(--radius-md);
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid var(--border-subtle);
+          animation: pulse 1.6s ease-in-out infinite;
         }
-        .forecast__card--active {
-          background: rgba(79, 142, 247, 0.12);
-          border-color: rgba(79, 142, 247, 0.3);
-          box-shadow: var(--shadow-glow-blue);
+        @keyframes pulse {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.75; }
         }
-        .forecast__day {
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: var(--clr-text-secondary);
-        }
-        .forecast__icon {
-          font-size: 1.75rem;
-        }
-        .forecast__high {
-          font-size: 1.125rem;
-          font-weight: 700;
-          color: var(--clr-text-primary);
-        }
-        .forecast__low {
-          font-size: 0.875rem;
-          color: var(--clr-text-muted);
-        }
-        @media (max-width: 600px) {
-          .forecast__strip {
+        @media (max-width: 640px) {
+          .forecast__row {
             grid-template-columns: repeat(3, 1fr);
+          }
+        }
+        @media (max-width: 420px) {
+          .forecast__row {
+            grid-template-columns: repeat(2, 1fr);
           }
         }
       `}</style>

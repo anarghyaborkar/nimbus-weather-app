@@ -1,21 +1,30 @@
 // server/routes/weather.js
 // ─────────────────────────────────────────────────────────────────────────────
-// Defines all URL routes related to weather.
-// The router's job is purely to map HTTP verbs + paths → controller functions.
-// It does NOT contain any logic — that all lives in the controller.
+// Defines all URL routes related to weather & forecasts.
+// Maps HTTP verbs + paths → controller functions.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const express = require('express');
-const { getCurrentWeather } = require('../controllers/weatherController');
+const {
+  getCurrentWeather,
+  getWeatherByCoordinates,
+  getForecast,
+  getForecastByCoordinates,
+} = require('../controllers/weatherController');
 
-// express.Router() creates a mini Express app that handles a slice of routes.
-// We mount this at "/api/weather" in server.js, so the full path becomes:
-//   GET /api/weather?city=London
 const router = express.Router();
 
-// Route definition:
-//   GET /   (relative to wherever this router is mounted)
-//   Handler: getCurrentWeather (imported from the controller)
+// Specific sub-paths MUST come before generic/root paths
+// GET /api/weather/coordinates?lat=...&lon=...
+router.get('/coordinates', getWeatherByCoordinates);
+
+// GET /api/weather/forecast/coordinates?lat=...&lon=...
+router.get('/forecast/coordinates', getForecastByCoordinates);
+
+// GET /api/weather/forecast?city=London
+router.get('/forecast', getForecast);
+
+// GET /api/weather?city=London
 router.get('/', getCurrentWeather);
 
 module.exports = router;

@@ -1,68 +1,71 @@
 /* ============================================================
-   Nimbus — Global Design System
-   Dark atmospheric weather application
+   Nimbus — Premium Modern Design System
+   Inspired by Apple Weather, Linear, Arc, Vercel & Notion.
+   Calm, minimal, spacious, subtle blur, refined typography.
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* ── Design Tokens ── */
 :root {
-  /* Colors */
-  --clr-bg-deep:        #080c14;
-  --clr-bg-base:        #0d1321;
-  --clr-bg-surface:     #111827;
-  --clr-bg-elevated:    #1a2236;
+  /* ── Neutral Canvas (Linear / Vercel dark aesthetics) ── */
+  --bg-app:             #0a0c10;
+  --bg-surface:         rgba(255, 255, 255, 0.024);
+  --bg-surface-elevated:rgba(255, 255, 255, 0.045);
+  --bg-surface-hover:   rgba(255, 255, 255, 0.06);
 
-  --clr-glass-bg:       rgba(255, 255, 255, 0.05);
-  --clr-glass-border:   rgba(255, 255, 255, 0.10);
-  --clr-glass-hover:    rgba(255, 255, 255, 0.08);
+  /* ── Subtle hairline borders (1px, low opacity) ── */
+  --border-subtle:      rgba(255, 255, 255, 0.06);
+  --border-medium:      rgba(255, 255, 255, 0.10);
+  --border-focus:       rgba(255, 255, 255, 0.22);
 
-  --clr-accent-blue:    #4f8ef7;
-  --clr-accent-indigo:  #7c6ff7;
-  --clr-accent-teal:    #2dd4bf;
-  --clr-accent-amber:   #fbbf24;
+  /* ── Refined Typography Colors ── */
+  --text-hero:          #ffffff;
+  --text-primary:       #f4f4f6;
+  --text-secondary:     #a1a1aa;
+  --text-tertiary:      #71717a;
+  --text-quaternary:    #52525b;
 
-  --clr-text-primary:   #f1f5f9;
-  --clr-text-secondary: #94a3b8;
-  --clr-text-muted:     #475569;
+  /* ── Tasteful Accents (Muted & Elegant) ── */
+  --accent-tint:        rgba(255, 255, 255, 0.08);
+  --accent-active:      #e4e4e7;
+  --accent-subtle-blue: rgba(56, 189, 248, 0.12);
+  --accent-subtle-teal: rgba(45, 212, 191, 0.12);
 
-  --clr-gradient-sky:   linear-gradient(135deg, #1e3a5f 0%, #0d1b2e 100%);
-  --clr-gradient-card:  linear-gradient(145deg, rgba(79,142,247,0.12) 0%, rgba(124,111,247,0.08) 100%);
+  /* ── Modern Spacing (Generous whitespace) ── */
+  --space-2xs: 4px;
+  --space-xs:  8px;
+  --space-sm:  12px;
+  --space-md:  20px;
+  --space-lg:  32px;
+  --space-xl:  48px;
+  --space-2xl: 72px;
+  --space-3xl: 96px;
 
-  /* Spacing scale */
-  --space-xs:  4px;
-  --space-sm:  8px;
-  --space-md:  16px;
-  --space-lg:  24px;
-  --space-xl:  32px;
-  --space-2xl: 48px;
-  --space-3xl: 64px;
+  /* ── Typography Scale ── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-
-  /* Borders */
-  --radius-sm:  8px;
-  --radius-md:  12px;
-  --radius-lg:  20px;
-  --radius-xl:  28px;
+  /* ── Radii ── */
+  --radius-xs:   6px;
+  --radius-sm:   10px;
+  --radius-md:   16px;
+  --radius-lg:   22px;
+  --radius-xl:   30px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md:  0 4px 24px rgba(0, 0, 0, 0.4);
-  --shadow-lg:  0 8px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glow-blue:   0 0 24px rgba(79, 142, 247, 0.25);
-  --shadow-glow-indigo: 0 0 24px rgba(124, 111, 247, 0.20);
+  /* ── Soft Shadows (Layered & feather-light) ── */
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.15);
+  --shadow-float:  0 12px 36px -8px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.2);
 
-  /* Transitions */
-  --transition-fast:   150ms ease;
-  --transition-base:   250ms ease;
-  --transition-slow:   400ms ease;
+  /* ── Fine Blurs ── */
+  --blur-subtle: blur(20px);
+  --blur-card:   blur(24px);
 
-  /* Blur */
-  --blur-glass: blur(16px);
-  --blur-light: blur(8px);
+  /* ── Transitions ── */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --trans-fast:  160ms var(--ease-smooth);
+  --trans-base:  280ms var(--ease-spring);
+  --trans-slow:  420ms var(--ease-smooth);
 }
 
 /* ── Reset & Base ── */
@@ -75,18 +78,21 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  background-color: var(--bg-app);
+  color-scheme: dark;
 }
 
 body {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 0.9375rem;
   line-height: 1.6;
-  color: var(--clr-text-primary);
-  background-color: var(--clr-bg-deep);
+  color: var(--text-primary);
+  background-color: var(--bg-app);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
   overflow-x: hidden;
+  letter-spacing: -0.011em;
 }
 
 #root {
@@ -96,16 +102,17 @@ body {
   width: 100%;
 }
 
-/* ── Typography Helpers ── */
+/* ── Typography Base ── */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--clr-text-primary);
+  color: var(--text-hero);
+  font-weight: 500;
+  letter-spacing: -0.025em;
 }
 
 p {
-  color: var(--clr-text-secondary);
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 a {
@@ -113,45 +120,51 @@ a {
   text-decoration: none;
 }
 
-img, svg {
-  display: block;
-}
-
 button {
   font-family: var(--font-sans);
   cursor: pointer;
   border: none;
   background: none;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
 }
 
-/* ── Glassmorphism Utility ── */
+input {
+  font-family: var(--font-sans);
+}
+
+/* ── Modern Calm Card Utility (Replaces chunky glass) ── */
 .glass {
-  background: var(--clr-glass-bg);
-  backdrop-filter: var(--blur-glass);
-  -webkit-backdrop-filter: var(--blur-glass);
-  border: 1px solid var(--clr-glass-border);
+  background: var(--bg-surface);
+  backdrop-filter: var(--blur-card);
+  -webkit-backdrop-filter: var(--blur-card);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-subtle);
+  transition: border-color var(--trans-fast), background var(--trans-fast), transform var(--trans-base);
 }
 
-/* ── Gradient Text Utility ── */
+.glass:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-medium);
+}
+
+/* ── Minimalist Text Treatment ── */
 .gradient-text {
-  background: linear-gradient(135deg, var(--clr-accent-blue), var(--clr-accent-indigo));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-hero);
 }
 
-/* ── Scrollbar ── */
+/* ── Elegant Custom Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--clr-bg-base);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--clr-bg-elevated);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--clr-text-muted);
+  background: rgba(255, 255, 255, 0.16);
 }

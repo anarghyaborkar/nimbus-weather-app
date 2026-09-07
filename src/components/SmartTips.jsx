@@ -1,93 +1,123 @@
 // src/components/SmartTips.jsx
-// AI-generated smart tips based on the current weather.
-// Placeholder content — will be driven by an AI/chatbot integration later.
+// Intelligent Smart Tips module.
+// Dynamically generates 2-3 contextual suggestions based on live weather metrics.
+// Subtle staggered fade-in animations on updates.
 
-const PLACEHOLDER_TIPS = [
-  {
-    icon: '🧴',
-    tip: 'Apply SPF 50+ sunscreen — UV levels are high today.',
-  },
-  {
-    icon: '💧',
-    tip: 'Stay hydrated. Drink at least 3 litres of water.',
-  },
-  {
-    icon: '👗',
-    tip: 'Wear light, breathable cotton fabrics.',
-  },
-];
+import { useMemo } from 'react';
+import { generateSmartTips } from '../utils/tipEngine';
 
-function SmartTips() {
+function SmartTips({ weather, loading }) {
+  const tips = useMemo(() => generateSmartTips(weather), [weather]);
+
   return (
-    <section className="tips glass" aria-label="Smart weather tips">
-      <div className="tips__header">
-        <span className="tips__ai-badge" aria-hidden="true">✨ AI</span>
-        <h3 className="tips__title">Smart Tips for Today</h3>
+    <section className="smart-panel" aria-label="Smart tips">
+      <div className="smart-panel__head">
+        <h3 className="smart-panel__label">Smart Tips</h3>
+        {loading && <span className="smart-panel__status">Updating…</span>}
       </div>
 
-      <ul className="tips__list" role="list">
-        {PLACEHOLDER_TIPS.map((item, i) => (
-          <li className="tips__item" key={i}>
-            <span className="tips__icon" aria-hidden="true">{item.icon}</span>
-            <p className="tips__text">{item.tip}</p>
-          </li>
-        ))}
-      </ul>
+      <div className="smart-panel__card">
+        <ul className="smart-list" role="list">
+          {tips.map((tip, idx) => (
+            <li
+              className="smart-item"
+              key={tip.id || idx}
+              style={{ animationDelay: `${idx * 80}ms` }}
+            >
+              <span className="smart-icon" aria-hidden="true">{tip.icon}</span>
+              <div className="smart-body">
+                <p className="smart-title">{tip.title}</p>
+                <p className="smart-text">{tip.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <style>{`
-        .tips {
-          padding: var(--space-xl);
-          background: linear-gradient(145deg, rgba(124,111,247,0.10), rgba(79,142,247,0.06));
+        .smart-panel {
+          width: 100%;
         }
-        .tips__header {
+        .smart-panel__head {
           display: flex;
           align-items: center;
-          gap: var(--space-sm);
-          margin-bottom: var(--space-lg);
+          justify-content: space-between;
+          margin-bottom: var(--space-sm);
+          padding: 0 2px;
         }
-        .tips__ai-badge {
-          padding: 2px 10px;
-          border-radius: var(--radius-full);
-          background: rgba(124, 111, 247, 0.18);
-          border: 1px solid rgba(124, 111, 247, 0.35);
-          color: var(--clr-accent-indigo);
+        .smart-panel__label {
           font-size: 0.75rem;
-          font-weight: 600;
+          font-weight: 500;
+          color: var(--text-tertiary);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
-        .tips__title {
-          font-size: 1rem;
-          font-weight: 600;
-          color: var(--clr-text-primary);
-          margin: 0;
+        .smart-panel__status {
+          font-size: 0.6875rem;
+          color: var(--text-quaternary);
         }
-        .tips__list {
+        .smart-panel__card {
+          padding: 16px 18px;
+          border-radius: var(--radius-md);
+          background: var(--bg-surface);
+          border: 1px solid var(--border-subtle);
+          transition: background var(--trans-fast), border-color var(--trans-fast);
+        }
+        .smart-panel__card:hover {
+          background: var(--bg-surface-elevated);
+          border-color: var(--border-medium);
+        }
+        .smart-list {
           list-style: none;
           display: flex;
           flex-direction: column;
-          gap: var(--space-md);
+          gap: 14px;
         }
-        .tips__item {
+        .smart-item {
           display: flex;
           align-items: flex-start;
-          gap: var(--space-md);
-          padding: var(--space-md);
-          border-radius: var(--radius-md);
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid var(--clr-glass-border);
-          transition: background var(--transition-fast);
+          gap: 10px;
+          animation: tipFadeIn 0.35s ease-out both;
         }
-        .tips__item:hover {
-          background: rgba(255, 255, 255, 0.07);
-        }
-        .tips__icon {
-          font-size: 1.25rem;
-          flex-shrink: 0;
-          margin-top: 1px;
-        }
-        .tips__text {
+        .smart-icon {
           font-size: 0.9375rem;
-          color: var(--clr-text-secondary);
+          line-height: 1.4;
+          flex-shrink: 0;
+          opacity: 0.9;
+        }
+        .smart-body {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .smart-title {
+          font-size: 0.8125rem;
+          font-weight: 500;
+          color: var(--text-primary);
+          line-height: 1.35;
+          letter-spacing: -0.01em;
+        }
+        .smart-text {
+          font-size: 0.75rem;
+          color: var(--text-secondary);
           line-height: 1.5;
+        }
+
+        @keyframes tipFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .smart-item {
+            animation: none !important;
+          }
         }
       `}</style>
     </section>
