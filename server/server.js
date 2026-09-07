@@ -79,13 +79,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Step 6 — Start the server.
-// Fall back to port 5000 if PORT is not set in .env.
+// Step 6 — Start the server when run directly (node server.js).
+// In serverless environments (e.g. Vercel), the exported app is handled by the serverless runtime.
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`\n🌤  Nimbus server is running`);
-  console.log(`   Local: http://localhost:${PORT}`);
-  console.log(`   Health check: http://localhost:${PORT}/health`);
-  console.log(`   Weather API:  http://localhost:${PORT}/api/weather?city=London\n`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🌤  Nimbus server is running`);
+    console.log(`   Local: http://localhost:${PORT}`);
+    console.log(`   Health check: http://localhost:${PORT}/health`);
+    console.log(`   Weather API:  http://localhost:${PORT}/api/weather?city=London\n`);
+  });
+}
+
+module.exports = app;

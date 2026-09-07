@@ -6,7 +6,7 @@
 // 2. The backend base URL is centralized here in one place.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const BACKEND_BASE_URL = 'http://localhost:5000/api';
+const BACKEND_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 /**
  * Internal helper to send requests to backend and handle connection/HTTP errors.
@@ -17,7 +17,7 @@ async function sendRequest(endpoint) {
     response = await fetch(`${BACKEND_BASE_URL}${endpoint}`);
   } catch (networkError) {
     throw new Error(
-      'Unable to connect to the weather server. Please make sure the backend is running on http://localhost:5000.'
+      'Unable to connect to the weather service. Please ensure the backend is running and check your network.'
     );
   }
 
