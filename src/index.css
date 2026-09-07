@@ -1,0 +1,157 @@
+/* ============================================================
+   Nimbus — Global Design System
+   Dark atmospheric weather application
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+  /* Colors */
+  --clr-bg-deep:        #080c14;
+  --clr-bg-base:        #0d1321;
+  --clr-bg-surface:     #111827;
+  --clr-bg-elevated:    #1a2236;
+
+  --clr-glass-bg:       rgba(255, 255, 255, 0.05);
+  --clr-glass-border:   rgba(255, 255, 255, 0.10);
+  --clr-glass-hover:    rgba(255, 255, 255, 0.08);
+
+  --clr-accent-blue:    #4f8ef7;
+  --clr-accent-indigo:  #7c6ff7;
+  --clr-accent-teal:    #2dd4bf;
+  --clr-accent-amber:   #fbbf24;
+
+  --clr-text-primary:   #f1f5f9;
+  --clr-text-secondary: #94a3b8;
+  --clr-text-muted:     #475569;
+
+  --clr-gradient-sky:   linear-gradient(135deg, #1e3a5f 0%, #0d1b2e 100%);
+  --clr-gradient-card:  linear-gradient(145deg, rgba(79,142,247,0.12) 0%, rgba(124,111,247,0.08) 100%);
+
+  /* Spacing scale */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Borders */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md:  0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg:  0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow-blue:   0 0 24px rgba(79, 142, 247, 0.25);
+  --shadow-glow-indigo: 0 0 24px rgba(124, 111, 247, 0.20);
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* Blur */
+  --blur-glass: blur(16px);
+  --blur-light: blur(8px);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--clr-text-primary);
+  background-color: var(--clr-bg-deep);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ── Typography Helpers ── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--clr-text-primary);
+}
+
+p {
+  color: var(--clr-text-secondary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, svg {
+  display: block;
+}
+
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ── Glassmorphism Utility ── */
+.glass {
+  background: var(--clr-glass-bg);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Gradient Text Utility ── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--clr-accent-blue), var(--clr-accent-indigo));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--clr-bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--clr-bg-elevated);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clr-text-muted);
+}
