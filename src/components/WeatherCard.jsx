@@ -2,7 +2,10 @@
 // Apple Weather / Notion inspired minimalist hero weather display.
 // Focuses on huge, elegant typography, airy whitespace, and refined metric tiles.
 
-function WeatherCard({ weather, loading, error, isLocationBased }) {
+import { useCallback } from 'react';
+import { useCountUp } from '../hooks/useCountUp';
+
+function WeatherCard({ weather, loading, error, isLocationBased, onShare }) {
   const formattedDate = new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     month: 'short',
@@ -68,6 +71,17 @@ function WeatherCard({ weather, loading, error, isLocationBased }) {
     );
   }
 
+  // Animate temperature on change
+  const animatedTemp = useCountUp(
+    weather?.temperature ?? null,
+    650,
+    (weather?.temperature ?? 0) - 5
+  );
+
+  const handleShare = useCallback(() => {
+    onShare?.();
+  }, [onShare]);
+
   const iconUrl = weather.icon
     ? `https://openweathermap.org/img/wn/${weather.icon}@2x.png`
     : null;
@@ -76,6 +90,7 @@ function WeatherCard({ weather, loading, error, isLocationBased }) {
     <div
       className={`weather-hero glass ${loading ? 'weather-hero--loading' : ''}`}
       aria-label="Current weather conditions"
+      aria-busy={loading}
     >
       {/* Subsequent error alert */}
       {error && (
@@ -101,13 +116,31 @@ function WeatherCard({ weather, loading, error, isLocationBased }) {
             </span>
           )}
         </div>
-        <p className="weather-hero__date">{formattedDate}</p>
+        <div className="weather-hero__meta-right">
+          <p className="weather-hero__date">{formattedDate}</p>
+          {onShare && (
+            <button
+              type="button"
+              className="weather-hero__share-btn"
+              onClick={handleShare}
+              aria-label="Share weather card"
+              title="Share this weather"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                <polyline points="16 6 12 2 8 6" />
+                <line x1="12" y1="2" x2="12" y2="15" />
+              </svg>
+              Share
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Huge Apple-style Focal Temperature */}
       <div className="weather-hero__centerpiece">
         <div className="temp-cluster">
-          <span className="hero-degree">{weather.temperature}</span>
+          <span className="hero-degree" aria-label={`${animatedTemp} degrees`}>{animatedTemp}</span>
           <span className="hero-unit">°</span>
         </div>
 
@@ -184,11 +217,19 @@ function WeatherCard({ weather, loading, error, isLocationBased }) {
           flex-direction: column;
           align-items: center;
           gap: 4px;
+          width: 100%;
+        }
+        .weather-hero__meta-right {
+          display: flex;
+          align-items: center;
+          gap: 8px;
         }
         .weather-hero__city-wrap {
           display: flex;
           align-items: center;
           gap: 8px;
+          flex-wrap: wrap;
+          justify-content: center;
         }
         .weather-hero__city {
           font-size: 1.375rem;
@@ -215,6 +256,25 @@ function WeatherCard({ weather, loading, error, isLocationBased }) {
         .weather-hero__date {
           font-size: 0.8125rem;
           color: var(--text-tertiary);
+        }
+        /* ── Share button ── */
+        .weather-hero__share-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 3px 10px;
+          border-radius: var(--radius-full);
+          background: rgba(255,255,255,0.04);
+          border: 1px solid var(--border-subtle);
+          color: var(--text-tertiary);
+          font-size: 0.6875rem;
+          font-weight: 500;
+          transition: background var(--trans-fast), color var(--trans-fast), border-color var(--trans-fast);
+        }
+        .weather-hero__share-btn:hover {
+          background: rgba(255,255,255,0.09);
+          color: var(--text-primary);
+          border-color: var(--border-medium);
         }
 
         /* ── Hero Temperature Centerpiece (Apple Weather) ── */

@@ -72,3 +72,28 @@ export function getWeatherCondition(weather) {
 
   return 'clear';
 }
+
+/**
+ * Determines the current time-of-day phase for the given city.
+ * Uses the timezone offset (seconds) from the weather object to compute local time.
+ *
+ * Phases:
+ *   'morning'   → 05:00–11:59  warm golden light
+ *   'afternoon' → 12:00–16:59  bright neutral
+ *   'evening'   → 17:00–20:59  amber/orange glow
+ *   'night'     → 21:00–04:59  deep dark
+ *
+ * @param {object|null} weather - weather object with optional .timezone (UTC offset seconds)
+ * @returns {'morning'|'afternoon'|'evening'|'night'}
+ */
+export function getDayPhase(weather) {
+  const tzOffset = weather?.timezone ?? 0; // seconds
+  const nowUnix = Math.floor(Date.now() / 1000);
+  const localMs = (nowUnix + tzOffset) * 1000;
+  const localHour = new Date(localMs).getUTCHours();
+
+  if (localHour >= 5  && localHour < 12) return 'morning';
+  if (localHour >= 12 && localHour < 17) return 'afternoon';
+  if (localHour >= 17 && localHour < 21) return 'evening';
+  return 'night';
+}

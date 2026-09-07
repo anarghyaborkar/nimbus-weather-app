@@ -14,11 +14,13 @@
 import { useMemo } from 'react';
 import { getWeatherCondition } from '../utils/weatherThemes';
 
-function AnimatedBackground({ weather }) {
+function AnimatedBackground({ weather, dayPhase = 'night' }) {
   const condition = useMemo(() => getWeatherCondition(weather), [weather]);
 
   return (
-    <div className={`anim-bg anim-bg--${condition}`} aria-hidden="true">
+    <div className={`anim-bg anim-bg--${condition}`} aria-hidden="true" data-phase={dayPhase}>
+      {/* Day/Night tint overlay — transitions smoothly between time-of-day phases */}
+      <div className={`phase-tint phase-tint--${dayPhase}`} />
       {/* ── Condition-specific weather elements ── */}
 
       {/* 1. CLEAR: Warm sunlight beam and floating dust motes */}
@@ -452,6 +454,35 @@ function AnimatedBackground({ weather }) {
         @keyframes fogMove {
           0%   { transform: translateX(-80px) scaleY(1); opacity: 0.4; }
           100% { transform: translateX(80px) scaleY(1.2); opacity: 0.8; }
+        }
+
+        /* ── 7. DAY/NIGHT PHASE TINT OVERLAYS ── */
+        /* Subtle colour wash that transitions the whole atmosphere to match local time */
+        .phase-tint {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          transition: background 4s ease, opacity 4s ease;
+        }
+        /* Morning: warm golden wash */
+        .phase-tint--morning {
+          background: radial-gradient(ellipse at 60% 0%, rgba(251,191,36,0.07) 0%, transparent 65%);
+          opacity: 1;
+        }
+        /* Afternoon: neutral/bright — essentially no extra tint */
+        .phase-tint--afternoon {
+          background: transparent;
+          opacity: 0;
+        }
+        /* Evening: amber glow from the bottom-right */
+        .phase-tint--evening {
+          background: radial-gradient(ellipse at 80% 90%, rgba(251,146,60,0.10) 0%, rgba(239,68,68,0.05) 40%, transparent 70%);
+          opacity: 1;
+        }
+        /* Night: deep cool indigo overlay */
+        .phase-tint--night {
+          background: radial-gradient(ellipse at 50% 0%, rgba(30,27,75,0.18) 0%, transparent 60%);
+          opacity: 1;
         }
 
         /* ── ACCESSIBILITY: prefers-reduced-motion ── */

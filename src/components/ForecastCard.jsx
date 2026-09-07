@@ -1,7 +1,7 @@
 // src/components/ForecastCard.jsx
 // Minimalist daily forecast card — clean typography and subtle micro-interactions.
 
-function ForecastCard({ item, isToday }) {
+function ForecastCard({ item, isToday, animationDelay = 0 }) {
   const iconUrl = item.icon
     ? `https://openweathermap.org/img/wn/${item.icon}.png`
     : null;
@@ -10,6 +10,7 @@ function ForecastCard({ item, isToday }) {
     <div
       className={`f-card ${isToday ? 'f-card--active' : ''}`}
       aria-label={`Forecast for ${item.dayOfWeek}`}
+      style={{ animationDelay: `${animationDelay}ms` }}
     >
       <div className="f-card__day-wrap">
         <span className="f-card__day">{isToday ? 'Today' : item.dayOfWeek}</span>
@@ -49,6 +50,11 @@ function ForecastCard({ item, isToday }) {
           border: 1px solid var(--border-subtle);
           transition: background var(--trans-fast), border-color var(--trans-fast), transform var(--trans-base);
           text-align: center;
+          animation: cardSlideUp 0.35s var(--ease-spring) both;
+        }
+        @keyframes cardSlideUp {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         .f-card:hover {
           background: var(--bg-surface-elevated);

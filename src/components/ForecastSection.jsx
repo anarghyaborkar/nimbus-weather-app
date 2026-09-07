@@ -34,6 +34,7 @@ function ForecastSection({ forecast, loading, error }) {
               key={item.date || index}
               item={item}
               isToday={index === 0}
+              animationDelay={index * 60}
             />
           ))}
         </div>
