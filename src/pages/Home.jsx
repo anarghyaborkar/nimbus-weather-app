@@ -28,6 +28,7 @@ import SmartTips             from '../components/SmartTips';
 import SpotifyCard           from '../components/SpotifyCard';
 import SunriseSunsetCard     from '../components/SunriseSunsetCard';
 import Footer                from '../components/Footer';
+import NimbusChat           from '../components/NimbusChat';
 
 import { useWeather }        from '../hooks/useWeather';
 import { useForecast }       from '../hooks/useForecast';
@@ -217,6 +218,9 @@ function Home() {
           />
         </Suspense>
       )}
+
+      {/* ── Nimbus AI floating chat assistant ────────────────────────── */}
+      <NimbusChat weather={weather} />
 
       <style>{`
         .canvas {

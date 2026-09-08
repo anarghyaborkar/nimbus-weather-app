@@ -20,6 +20,7 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express      = require('express');
 const cors         = require('cors');
 const weatherRoute = require('./routes/weather');
+const chatRoute    = require('./routes/chat');
 
 // Step 2 — Create the Express application.
 const app = express();
@@ -33,7 +34,7 @@ app.use(
     // In development allow both Vite's default port (5173) and any others.
     // In production you would restrict this to your deployed frontend URL.
     origin: ['http://localhost:5173', 'http://localhost:3000'],
-    methods: ['GET'],
+    methods: ['GET', 'POST'],
   })
 );
 
@@ -46,6 +47,10 @@ app.use(express.json());
 // Mount both with and without /api prefix so local server and Vercel serverless rewrites match seamlessly.
 app.use('/api/weather', weatherRoute);
 app.use('/weather', weatherRoute);
+
+// Nimbus AI chat endpoint
+app.use('/api/chat', chatRoute);
+app.use('/chat', chatRoute);
 
 // Health-check endpoint — useful to quickly verify the server is running.
 app.get(['/health', '/api/health'], (req, res) => {
